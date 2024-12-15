@@ -125,7 +125,7 @@ celerybeat.pid
 .env
 # .gitignore .env
 .venv
-.chatbot
+chatbot/
 env/
 venv/
 ENV/
