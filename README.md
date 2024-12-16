@@ -18,4 +18,4 @@ This project implements a Q&A chatbot system using the GROQ API, LangChain, and 
 streamlit run app.py
 
 * Output 
-![Ollama Output](https://github.com/your-username/your-repo/raw/main/OutPut_Screens/ollama_output.png)
+![Ollama Output](https://github.com/webstormuser/Q-A-ChatBot-System-/blob/master/OutPut_Screens/ollama_ouput.png)
