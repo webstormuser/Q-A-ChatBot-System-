@@ -16,3 +16,6 @@ This project implements a Q&A chatbot system using the GROQ API, LangChain, and 
 2. pip install -r requirements.txt
 3. Run the Chatbot 
 streamlit run app.py
+
+* Output 
+![Ollama Output](https://github.com/your-username/your-repo/raw/main/OutPut_Screens/ollama_output.png)
