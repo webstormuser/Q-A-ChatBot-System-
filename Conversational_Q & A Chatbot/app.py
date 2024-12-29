@@ -81,3 +81,27 @@ if api_key:
         "please answer the question correctly based on reference"
         "{context}"
     )
+
+    qa_promt=ChatPromptTemplate.from_messages
+    (
+        [
+            ("system",system_prompt),
+            MessagesPlaceholder("chat_history"),
+            ("human","{input}")
+        ]
+    )
+
+    question_answer_chain=create_stuff_documents_chain(llm,qa_promt)
+    rage_chain=create_retrieval_chain(history_aware_retriever,question_answer_chain)
+
+
+    def get_session_history(session:str)->BaseChatMessageHistory:
+        if session_id not in st.session_state.store:
+            st.session_state.store[session_id]=ChatMessageHistory
+        return st.session_state.store[session_id]
+    
+
+    conversation_rag_chain=RunnableWithMessageHistory(
+        ragchain,
+    )
+    
