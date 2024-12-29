@@ -6,3 +6,6 @@ streamlit
 langchain-groq
 langchain_ollama
 pypdf
+langchain-openai
+langchain-chroma
+langchain_huggingface
