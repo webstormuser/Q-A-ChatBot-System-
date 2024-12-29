@@ -55,53 +55,56 @@ if api_key:
         vectorstore=Chroma.from_documents(documnets=splits,embbedings=embeddings)     
         retriever=vectorstore.as_retriever()   
 
-    contextualize_q_system_prompt=(
-        "Given a chat history and latest user question"
-        "which might reference context in the chat history"
-        "Formulate the standlone question which can be understood"
-        "Without chat history.Do not answer the question"
-    )
+        contextualize_q_system_prompt=(
+            "Given a chat history and latest user question"
+            "which might reference context in the chat history"
+            "Formulate the standlone question which can be understood"
+            "Without chat history.Do not answer the question"
+        )
 
 
-    contextualize_q_prompt=ChatPromptTemplate.from_messages(
-        [
-            ("System",contextualize_q_system_prompt),
-            MessagesPlaceholder("chat_history"),
-            ("human","{input}"),
-        ]
-    )
+        contextualize_q_prompt=ChatPromptTemplate.from_messages(
+            [
+                ("System",contextualize_q_system_prompt),
+                MessagesPlaceholder("chat_history"),
+                ("human","{input}"),
+            ]
+        )
 
 
-    history_aware_retriever=create_history_aware_retriever(llm,retriever,contextualize_q_prompt)
+        history_aware_retriever=create_history_aware_retriever(llm,retriever,contextualize_q_prompt)
 
-    #Answer question prompt 
+        #Answer question prompt 
 
-    system_prompt=(
-        "You are an excellent assistant for question answering task"
-        "please answer the question correctly based on reference"
-        "{context}"
-    )
+        system_prompt=(
+            "You are an excellent assistant for question answering task"
+            "please answer the question correctly based on reference"
+            "{context}"
+        )
 
-    qa_promt=ChatPromptTemplate.from_messages
-    (
-        [
-            ("system",system_prompt),
-            MessagesPlaceholder("chat_history"),
-            ("human","{input}")
-        ]
-    )
+        qa_promt=ChatPromptTemplate.from_messages
+        (
+            [
+                ("system",system_prompt),
+                MessagesPlaceholder("chat_history"),
+                ("human","{input}")
+            ]
+        )
 
-    question_answer_chain=create_stuff_documents_chain(llm,qa_promt)
-    rage_chain=create_retrieval_chain(history_aware_retriever,question_answer_chain)
+        question_answer_chain=create_stuff_documents_chain(llm,qa_promt)
+        rag_chain=create_retrieval_chain(history_aware_retriever,question_answer_chain)
 
 
-    def get_session_history(session:str)->BaseChatMessageHistory:
-        if session_id not in st.session_state.store:
-            st.session_state.store[session_id]=ChatMessageHistory
-        return st.session_state.store[session_id]
-    
+        def get_session_history(session:str)->BaseChatMessageHistory:
+            if session_id not in st.session_state.store:
+                st.session_state.store[session_id]=ChatMessageHistory
+            return st.session_state.store[session_id]
+        
 
-    conversation_rag_chain=RunnableWithMessageHistory(
-        ragchain,
-    )
-    
+        conversation_rag_chain=RunnableWithMessageHistory(
+            rag_chain,get_session_history,
+            input_messages_key="input",
+            history_messages_key="chat_history",
+            output_messages_key="answer"
+        )
+        
